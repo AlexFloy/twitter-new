@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    <form method="get" action="{% url 'posts' %}">
+    <label for="user_name">Фільтрувати за користувачем:</label>
+    <input type="text" id="user_name" name="user_name">
+    <button type="submit">Фільтрувати</button>
+    </form>
+
+    <ul>
+    {% for user_name in posts_menu %}
+        <li>{{ post.title }} - {{ post.user.first_name }}</li>
+    {% empty %}
+        <li>Немає постів для відображення.</li>
+   {% endfor %}
+    </ul>
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    {% for posts in post %}
+                        <div class="col">
+                            <div class="toast-header">
+                            {% if users.profile_picture %}
+                            <img src="{{ users.profile_picture.urls }}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
+                            {% endif %}
+                            <strong class="me-auto">{{posts.user}}</strong>
+                            <small>11 mins ago</small>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="card shadow-sm">
+                            {% if posts.posts_picture %}
+                            <img src="{{ posts.posts_picture.url }}" class="card-img-top">
+                            {% endif %}
+                        <div class="card-body">
+                            <p class="card-text">{{posts.content}}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">👍</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">👎</button>
+                                    </div>
+                                    <small class="text-body-secondary">треба зробити дату!</small>
+                                </div>
+                            </div>
+                    {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
+    {% endblock %}

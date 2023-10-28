@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="fw-light">{{ title }}</h1>
+        <p class="lead text-body-secondary">🎊Нова соціальна мережа🎊</p>
+        <p>
+        </p>
+      </div>
+    </div>
+</section>
+
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for users in user %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    {% if users.profile_picture %}
+                        <img src="{{ users.profile_picture.url }}" class="card-img-top img-fluid" style="height: 60px; width: 60px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'img/sta.jpg' %}" class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="64" height="64" role="img" aria-label="Placeholder: 32x32">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ users.user_name }} </h5>
+                        <p class="card-text">Дата реєстрації: {{ users.data_joined }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Тут можуть бути дії, пов'язані з автором -->
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
