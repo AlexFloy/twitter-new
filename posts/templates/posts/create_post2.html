@@ -4,8 +4,7 @@
 <section class="py-5 text-center container">
     <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-light">Додати нову книгу</h1>
-            <p class="lead text-body-secondary">Введіть інформацію про книгу нижче.</p>
+            <h1 class="fw-light">Додати пост</h1>
         </div>
     </div>
 </section>
@@ -14,12 +13,12 @@
     <div class="container">
         <div class="row">
             <div class="col-md-7 col-lg-8 mx-auto">
-                <h4 class="mb-3">Деталі книги</h4>
-                <form class="needs-validation" novalidate action="{% url 'add_book' %}" method="post" enctype="multipart/form-data">
+                <h4 class="mb-3">Деталі посту</h4>
+                <form class="needs-validation" novalidate action="{% url 'create_post' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <hr class="my-4">
-                    <button class="w-100 btn btn-primary btn-lg" type="submit">Додати книгу</button>
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">Опублікувати</button>
                 </form>
             </div>
         </div>

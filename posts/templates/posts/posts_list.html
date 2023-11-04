@@ -2,18 +2,12 @@
 {% load static %}
 {% block content %}
 
-    <form method="get" action="{% url 'posts' %}">
-    <label for="user_name">Фільтрувати за користувачем:</label>
-    <input type="text" id="user_name" name="user_name">
-    <button type="submit">Фільтрувати</button>
-    </form>
+
 
     <ul>
-    {% for user_name in posts_menu %}
-        <li>{{ post.title }} - {{ post.user.first_name }}</li>
-    {% empty %}
-        <li>Немає постів для відображення.</li>
-   {% endfor %}
+        {% for user_name in posts_menu %}
+            <li>{{ post.title }} - {{ posts.users.user_name }}</li>
+        {% endfor %}
     </ul>
     <div class="album py-5 bg-body-tertiary">
         <div class="container">
@@ -21,9 +15,9 @@
                     {% for posts in post %}
                         <div class="col">
                             <div class="toast-header">
-                            {% if users.profile_picture %}
-                            <img src="{{ users.profile_picture.urls }}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
-                            {% endif %}
+
+                            <img src="{{ posts.user.profile_picture.url }}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
+
                             <strong class="me-auto">{{posts.user}}</strong>
                             <small>11 mins ago</small>
                             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -38,6 +32,14 @@
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-sm btn-outline-secondary">👍</button>
                                         <button type="button" class="btn btn-sm btn-outline-secondary">👎</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                                            <a  href="{% url 'posts_detail' posts.pk%}">View</a>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                                            <a  href="{% url 'add_comments' %}">Add Comment</a>
+                                        </button>
+
+
                                     </div>
                                     <small class="text-body-secondary">треба зробити дату!</small>
                                 </div>
