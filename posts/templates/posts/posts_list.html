@@ -12,12 +12,14 @@
     <div class="album py-5 bg-body-tertiary">
         <div class="container">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    {% for posts in post %}
+                    {% for posts in object_list %}
                         <div class="col">
                             <div class="toast-header">
-
-                            <img src="{{ posts.user.profile_picture.url }}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
-
+                            {% if posts.user.profile_picture  %}
+                                <img src="{{ posts.user.profile_picture.url }}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
+                            {% else %}
+                                <img src="{% static 'img/sta.jpg' %}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
+                            {% endif %}
                             <strong class="me-auto">{{posts.user}}</strong>
                             <small>11 mins ago</small>
                             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -33,10 +35,10 @@
                                         <button type="button" class="btn btn-sm btn-outline-secondary">👍</button>
                                         <button type="button" class="btn btn-sm btn-outline-secondary">👎</button>
                                         <button type="button" class="btn btn-sm btn-outline-secondary">
-                                            <a  href="{% url 'posts_detail' posts.pk%}">View</a>
+                                            <a  href="{% url 'posts_detail' posts.pk %}">View</a>
                                         </button>
                                         <button type="button" class="btn btn-sm btn-outline-secondary">
-                                            <a  href="{% url 'add_comments' %}">Add Comment</a>
+                                            <a  href="{% url 'add_comments' posts.pk%}">Add Comment</a>
                                         </button>
 
 

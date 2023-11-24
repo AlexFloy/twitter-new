@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 <section class="py-5 text-center container">
     <div class="row py-lg-5">
@@ -36,9 +36,11 @@
                     {% for post in posts %}
                         <div class="col">
                             <div class="toast-header">
-
-                            <img src="{{ post.user.profile_picture.url }}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
-
+                            {% if user.profile_picture  %}
+                                <img src="{{ user.profile_picture.url }}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
+                            {% else %}
+                                <img src="{% static 'img/sta.jpg' %}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
+                            {% endif %}
                             <strong class="me-auto">{{post.user}}</strong>
                             <small>11 mins ago</small>
                             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>

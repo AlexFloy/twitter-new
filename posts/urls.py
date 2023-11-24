@@ -1,14 +1,14 @@
 from django.urls import path
 
 from posts import views
-from posts.views import posts_menu, create_post, add_comment
+from posts.views import PostListView, PostDetailView, PostCreateView, CommentCreateView
 
 urlpatterns = [
-    path('', posts_menu, name="posts"),
-    path('<str:user_name>', posts_menu, name="posts_user"),
-    path('posts/<int:post_id>', views.post_detail, name="posts_detail"),
-    path('posts/add-comment', add_comment, name="add_comments"),
-    path('posts/create-posts', create_post, name="create_post")
+    path('', PostListView.as_view(), name="posts"),
+    path('<str:user_name>', PostListView.as_view(), name="posts_user"),
+    path('posts/<int:pk>', PostDetailView.as_view(), name="posts_detail"),
+    path('posts/add-comment', CommentCreateView.as_view(), name="add_comments"),
+    path('posts/create-posts', PostCreateView.as_view(), name="create_post")
 
 ]
 

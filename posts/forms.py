@@ -28,9 +28,8 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comments
-        fields = ['user', 'post', 'content']
+        fields = ['user', 'content']
         widgets = {
             'user': forms.Select(attrs={'class': 'form-control'}),
-            'post': forms.Select(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control'}),
         }

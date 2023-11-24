@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<section class="py-5 text-center container">
-    <div class="row py-lg-5">
+<section class="py-5 text-center container" style="padding-top: 20px !important; padding-bottom: 20px !important;">
+    <div class="row py-lg-5" style="padding-top: 10px !important; padding-bottom: 10px !important;">
       <div class="col-lg-6 col-md-8 mx-auto">
-        <h1 class="fw-light">{{ title }}</h1>
+        <h1 class="fw-light">{{title}}</h1>
         <p class="lead text-body-secondary">🎊Нова соціальна мережа🎊</p>
         <p>
         </p>
@@ -15,7 +15,7 @@
 <div class="album py-5 bg-light">
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for users in user %}
+            {% for users in object_list %}
             <div class="col">
                 <div class="card shadow-sm">
                     {% if users.profile_picture %}
@@ -25,7 +25,7 @@
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ users.user_name }} </h5>
-                        <p class="card-text">Дата реєстрації: {{ users.data_joined }}</p>
+                        <p class="card-text">Data joined: {{ users.data_joined }}</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <!-- Тут можуть бути дії, пов'язані з автором -->
                             <div class="btn-group">
@@ -41,6 +41,8 @@
             </div>
             {% endfor %}
         </div>
+        {% include 'users/paginator.html' %}
     </div>
 </div>
+
 {% endblock %}

@@ -15,7 +15,7 @@
                 <h4 class="mb-3">Comment content</h4>
                 <form class="needs-validation" novalidate method="post" action="{% url 'add_comments' %}" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {% for field in comments %}
+                    {% for field in form %}
 
                         <div class="row g-3">
                             <div class="col-sm-12">
