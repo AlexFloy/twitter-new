@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound
 
-from users.models import User
 from posts.models import Post, Comments
-from posts.forms import PostForm, CommentForm
+from posts.forms import PostForm, CommentForm, LikeForm
 from django.views.generic import ListView, DetailView, CreateView
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 """
 # def posts_menu(request, user_name=None):
@@ -89,6 +91,7 @@ class PostCreateView(CreateView):
 # # вигляд посту"""
 
 
+@method_decorator(login_required, name='dispatch')
 class PostDetailView(DetailView):
     model = Post
     context_object_name = 'post'
@@ -106,6 +109,20 @@ class PostDetailView(DetailView):
             '-create_at')
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        post = self.get_object()
+
+        # Перевірка, чи користувач вже вподобав публікацію
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+            liked = False
+        else:
+            post.likes.add(request.user)
+            liked = True
+
+        # Повертаємо JSON-відповідь з інформацією про лайки
+        return JsonResponse({'liked': liked, 'likes_count': post.likes.count()})
 # вигляд посту
 
 
@@ -132,3 +149,18 @@ class CommentCreateView(CreateView):
         return super().form_valid(form)
 
 # додавання коменту
+
+
+def add_like(request, pk):
+    post = Post.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = LikeForm(request.POST)
+        if form.is_valid():
+            post.likes.add(request.user)
+            post.save()
+            return redirect('posts/posts_list.html', pk=pk)
+    else:
+        form = LikeForm(initial={'post_id': pk})
+
+    return render(request, 'posts/posts_list.html', {'form': form, 'post': post})

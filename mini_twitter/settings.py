@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'posts.apps.PostsConfig',
+    'custom_auth.apps.CustomAuthConfig',
     'widget_tweaks',
     'debug_toolbar',
 ]
