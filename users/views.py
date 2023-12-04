@@ -15,7 +15,7 @@ from django.views.generic import ListView, DetailView
 
 class UserListView(ListView):
     model = User
-    context_object_name = 'user'
+    context_object_name = 'user_info'
     template_name = 'users/user_list.html'
     extra_context = {'title': 'USER LIST'}
     paginate_by = 9
@@ -41,10 +41,14 @@ class UserListView(ListView):
 
 class UserDetailView(DetailView):
     model = User
-    context_object_name = 'user'
+    context_object_name = 'user_info'
     template_name = 'users/user_detail.html'
+
+    # def get_queryset(self):
+    #     query = super().get_queryset()
+    #     return query.prefetch_related('id')
 
     def get_context_data(self, **kwargs):
         post = super().get_context_data(**kwargs)
-        post['posts'] = Post.objects.filter(user__id=self.kwargs['pk'])
+        post['posts'] = Post.objects.filter(user=post['user_info']).select_related('user')
         return post

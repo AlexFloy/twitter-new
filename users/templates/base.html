@@ -173,15 +173,14 @@
             <strong>Mini twitter</strong>
         </a>
         <div class="d-flex align-items-center">
-            {% if user.is_staff %}
-            <a href="{% url 'create_post' %}" class="btn btn-outline-info my-2 my-sm-0 ms-auto me-4">Додати пост</a>
-            {% endif %}
             <div>
                 {% if user.is_authenticated %}
-                <span class="me-3 text-white">Вітаю, {{ user.username }}</span>
+                <span class="me-3 text-white">Hello, {{ user.username }}</span>
+                <a href="{% url 'create_post' %}" class="btn btn-outline-info my-2 my-sm-0 ms-auto me-4">Add Post</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-info my-2 my-sm-0 me-2">Logout</a>
                 {% else %}
-                <a href="#" class="btn btn-outline-info my-2 my-sm-0 me-2">Увійти</a>
-                <a href="#" class="btn btn-outline-info my-2 my-sm-0">Зареєструватися</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-info my-2 my-sm-0 me-2">Sign up</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-info my-2 my-sm-0">Registration</a>
                 {% endif %}
                 <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -208,7 +207,7 @@
     <p class="float-end mb-1">
       <a href="#">Back to top</a>
     </p>
-    <p class="mb-1">Читайте найкраще тільки у нас!</p>
+    <p class="mb-1">Comeback to reality</p>
   </div>
 </footer>
 

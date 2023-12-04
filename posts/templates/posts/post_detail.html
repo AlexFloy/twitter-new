@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 <section class="py-5 text-center container">
     <div class="row py-lg-5">
@@ -25,7 +25,7 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary">
-                                    <a  href="{% url 'add_comments'%}">Add Comment</a>
+                                    <a  href="{% url 'add_comments' post.pk %}">Add Comment</a>
                             </button>
                         </div>
                     </div>

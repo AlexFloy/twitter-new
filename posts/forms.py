@@ -33,3 +33,8 @@ class CommentForm(forms.ModelForm):
             'user': forms.Select(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+
+class LikeForm(forms.Form):
+    # Поле, яке може бути порожнім і визначається у вигляді хованого поля форми
+    post_id = forms.IntegerField(widget=forms.HiddenInput())
