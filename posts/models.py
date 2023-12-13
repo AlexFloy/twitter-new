@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import User
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 
 
 class Post(models.Model):
@@ -8,7 +9,8 @@ class Post(models.Model):
     title = models.CharField(max_length=254)
     posts_picture = models.ImageField(upload_to="post/profile_images", null=True, blank=True)
     content = models.TextField(null=True, blank=True)
-    likes = models.ManyToManyField(User, related_name='liked_posts', default=None, blank=True)
+    likes = models.ManyToManyField(User, related_name='post_likes', default=None, blank=True)
+    create_at = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
         return reverse('posts_detail', kwargs={'pk': self.pk})
@@ -16,12 +18,8 @@ class Post(models.Model):
     def __str__(self):
         return f"{self.user}"
 
-    create_at = models.DateTimeField(auto_now_add=True)
-
-    def add_like(self):
-        """
-        Додає лайк в список лайків для даного поста
-        """
+    @property
+    def num_likes(self):
         return self.likes.all().count()
 
 
@@ -37,3 +35,19 @@ class Comments(models.Model):
         return f"{self.user} {self.post} {self.content}"
 
     create_at = models.DateTimeField(auto_now_add=True)
+
+
+LIKE_CHOICES = (
+    ('Like', 'Like'),
+    ('Unlike', 'Unlike'),
+)
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    value = models.CharField(choices=LIKE_CHOICES, default='Like')
+
+    def __str__(self):
+        return str(self.post)
+

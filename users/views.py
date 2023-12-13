@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponseNotFound
 
 from users.models import User
-from posts.models import Post
+from posts.models import Post, Like
 from django.views.generic import ListView, DetailView
+from django.shortcuts import get_object_or_404, redirect
 
 """
 # def users(request):
@@ -52,3 +53,26 @@ class UserDetailView(DetailView):
         post = super().get_context_data(**kwargs)
         post['posts'] = Post.objects.filter(user=post['user_info']).select_related('user')
         return post
+
+
+def post_like(request, pk):
+    user = request.user.pk
+    post = get_object_or_404(Post, pk=pk)
+
+    user_instance = User.objects.get(pk=user)
+
+    like, created = Like.objects.get_or_create(user=user_instance, post=post)
+
+    if user in post.likes.all().values_list('id', flat=True):
+        post.likes.remove(user)
+        like.value = 'Unlike'
+    else:
+        post.likes.add(user)
+        like.value = 'Like'
+
+    print(f"Before save: {like.value}")
+    like.value = "Unlike" if like.value == "Like" else "Like"
+    like.save()
+    print(f"After save: {like.value}")
+
+    return redirect('user_detail', pk=pk)

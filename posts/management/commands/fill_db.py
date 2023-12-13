@@ -11,16 +11,16 @@ class Command(BaseCommand):
     help = 'Create random users'
 
     def handle(self, *args, **kwargs):
-        for i in range(1, 21):
-            User.objects.create(
-                user_name=get_random_string(3),
-                email=get_random_string(5),
-                data_joined=datetime(year=2000 + random.randint(1, 23),
-                                     month=1 + random.randint(0, 11),
-                                     day=1 + random.randint(0, 29))
-            )
+        # for i in range(1, 21):
+        #     User.objects.create(
+        #         user_name=get_random_string(3),
+        #         email=get_random_string(5),
+        #         data_joined=datetime(year=2000 + random.randint(1, 23),
+        #                              month=1 + random.randint(0, 11),
+        #                              day=1 + random.randint(0, 29))
+        #     )
         users = User.objects.all()
-        for i in range(10):
+        for i in range(100):
             Post.objects.create(
                 user=random.choice(users),
                 title='Example Post',
