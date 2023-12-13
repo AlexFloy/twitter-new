@@ -21,7 +21,6 @@
                     <img src="{% static 'img/sta.jpg' %}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
                 {% endif %}
                 <strong class="me-auto">{{posts.user}}</strong>
-                <small>11 mins ago</small>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="card shadow-sm">
@@ -43,7 +42,7 @@
 
 
                             </div>
-                            <small class="text-body-secondary">треба зробити дату!</small>
+                            <small class="text-body-secondary">{{ post.created_at|date:"d.m.Y" }}</small>
                         </div>
                     </div>
                 </div>

@@ -1,12 +1,13 @@
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from users.models import User
+from posts.models import Post, Comments, Like
+from posts.forms import PostForm, CommentForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib.auth import get_user_model
 
-from posts.models import Post, Comments
-from posts.forms import PostForm, CommentForm, LikeForm
-from django.views.generic import ListView, DetailView, CreateView
-from django.http import JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.shortcuts import get_object_or_404, redirect, reverse
+from django.views import View
+
 
 """
 # def posts_menu(request, user_name=None):
@@ -91,7 +92,6 @@ class PostCreateView(CreateView):
 # # вигляд посту"""
 
 
-@method_decorator(login_required, name='dispatch')
 class PostDetailView(DetailView):
     model = Post
     context_object_name = 'post'
@@ -109,20 +109,6 @@ class PostDetailView(DetailView):
             '-create_at')
 
         return context
-
-    def post(self, request, *args, **kwargs):
-        post = self.get_object()
-
-        # Перевірка, чи користувач вже вподобав публікацію
-        if request.user in post.likes.all():
-            post.likes.remove(request.user)
-            liked = False
-        else:
-            post.likes.add(request.user)
-            liked = True
-
-        # Повертаємо JSON-відповідь з інформацією про лайки
-        return JsonResponse({'liked': liked, 'likes_count': post.likes.count()})
 # вигляд посту
 
 
@@ -147,20 +133,40 @@ class CommentCreateView(CreateView):
     def form_valid(self, form):
         form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
         return super().form_valid(form)
-
 # додавання коменту
 
 
-def add_like(request, pk):
-    post = Post.objects.get(pk=pk)
+def post_like(request, pk):
+    print(f"User ID: {request.user.pk}")
+    print(f"Post ID: {pk}")
+    user = request.user.pk
+    # user = get_user_model().objects.get(pk=request.user.pk)
+    post = get_object_or_404(Post, pk=pk)
 
-    if request.method == 'POST':
-        form = LikeForm(request.POST)
-        if form.is_valid():
-            post.likes.add(request.user)
-            post.save()
-            return redirect('posts/posts_list.html', pk=pk)
+    user_instance = User.objects.get(pk=user)
+
+    like, created = Like.objects.get_or_create(user=user_instance, post=post)
+    print(f"Like object exists: {like}")
+
+    if user in post.likes.all().values_list('id', flat=True):
+        post.likes.remove(user)
+        like.value = 'Unlike'
     else:
-        form = LikeForm(initial={'post_id': pk})
+        post.likes.add(user)
+        like.value = 'Like'
+    # if created:
+    #     if like.value == "Like":
+    #         like.value = "Unlike"
+    #     else:
+    #         like.value = "Like"
+    # else:
+    #     like.value = "Unlike" if like.value == "Like" else "Like"
+    print(f"Before save: {like.value}")  # Додайте цей вивід для відстеження
+    like.value = "Unlike" if like.value == "Like" else "Unlike"
+    like.save()
+    print(f"After save: {like.value}")
+    return redirect('posts_detail', pk=pk)
 
-    return render(request, 'posts/posts_list.html', {'form': form, 'post': post})
+# додоавання лайку  доробити !!!!!!!!!
+# ставить лайк але не міняє кнопку на unlikee
+
