@@ -16,7 +16,8 @@ class PostForm(forms.ModelForm):
         }
 # 2 view
 
-# 1 view class PostsForm(forms.Form):
+# 1 view
+# class PostsForm(forms.Form):
 #     user = forms.ModelChoiceField(queryset=User.objects.all())
 #     title = forms.CharField()
 #     posts_picture = forms.ImageField()
@@ -35,6 +36,4 @@ class CommentForm(forms.ModelForm):
         }
 
 
-class LikeForm(forms.Form):
-    # Поле, яке може бути порожнім і визначається у вигляді хованого поля форми
-    post_id = forms.IntegerField(widget=forms.HiddenInput())
+
