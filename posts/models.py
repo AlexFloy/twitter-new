@@ -46,7 +46,7 @@ LIKE_CHOICES = (
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    value = models.CharField(choices=LIKE_CHOICES, default='Like')
+    value = models.CharField(choices=LIKE_CHOICES)
 
     def __str__(self):
         return str(self.post)

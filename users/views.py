@@ -55,24 +55,3 @@ class UserDetailView(DetailView):
         return post
 
 
-def post_like(request, pk):
-    user = request.user.pk
-    post = get_object_or_404(Post, pk=pk)
-
-    user_instance = User.objects.get(pk=user)
-
-    like, created = Like.objects.get_or_create(user=user_instance, post=post)
-
-    if user in post.likes.all().values_list('id', flat=True):
-        post.likes.remove(user)
-        like.value = 'Unlike'
-    else:
-        post.likes.add(user)
-        like.value = 'Like'
-
-    print(f"Before save: {like.value}")
-    like.value = "Unlike" if like.value == "Like" else "Like"
-    like.save()
-    print(f"After save: {like.value}")
-
-    return redirect('user_detail', pk=pk)

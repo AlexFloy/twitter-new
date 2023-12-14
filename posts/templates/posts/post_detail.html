@@ -29,9 +29,9 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="post.id" value="{{ obj.id }}">
                                     {% if user in post.likes.all %}
-                                        <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">{{ like.value }}</button>
+                                        <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">{{ post.likes.value }}</button>
                                     {% else %}
-                                        <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">️️️️️️❤️️️️️️️ {{ like.value }}</button>
+                                        <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">️️️️️️❤️️️️️️️ {{ post.likes.value }}</button>
                                     {% endif %}
                                 </form>
                                 <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>

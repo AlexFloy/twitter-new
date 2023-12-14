@@ -165,7 +165,7 @@ def post_like(request, pk):
     like.value = "Unlike" if like.value == "Like" else "Unlike"
     like.save()
     print(f"After save: {like.value}")
-    return redirect('posts_detail', pk=pk)
+    return redirect(request.META.get('HTTP_REFERER','redirect_if_referer_not_found'),pk=pk)
 
 # додоавання лайку  доробити !!!!!!!!!
 # ставить лайк але не міняє кнопку на unlikee
