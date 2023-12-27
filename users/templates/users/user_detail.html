@@ -15,15 +15,31 @@
             <div class="col-md-6">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <p class="card-text">Nickname: {{ user_info.user_name }}</p>
+                        <p class="card-text">Nickname: {{ user_info.username }}</p>
                         <p class="card-text">Email: {{ user_info.email }}</p>
-                        <p class="card-text">Data Joined: {{ user_info.data_joined }}</p>
-
+                        <p class="card-text">Data Joined: {{ user_info.date_joined }}</p>
+                        <a href="{% url 'users' 'subscribe' %}">
+                            <p class="card-text">Subscribes: {{ user_info.subscribe.count }} </p>
+                        </a>
+                        <a href="{% url 'users' 'following' %}">
+                            <p class="card-text">Followings: {{ user_info.following_count }} </p>
+                        </a>
                         <!-- Тут можуть бути дії, пов'язані з інформацією -->
                         <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                            <p class="card-text">Likes: {{ post.likes.all.count }}</p>
-                            <p class="card-text">Comments: {{ post.comments.count }}</p>
+                            {% if user.is_authenticated %}
+                                {% if user != user_info %}
+                                    {% if user_info in user.following.all %}
+                                        <a href="{% url 'unsubscribe' user_info.pk %}" class="btn btn-secondary mt-3">Unsubscribe</a>
+                                    {% else %}
+                                        <a href="{% url 'subscribe' user_info.pk %}" class="btn btn-secondary mt-3">Subscribe</a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% if user_info == user %}
+                            <form action="{% url 'update' user.pk %}">
+                                <button type="submit" data-bs-dismiss="toast"> Edit</button>
+                            </form>
+                        {% endif %}
                         </div>
                     </div>
                 </div>
@@ -42,6 +58,9 @@
                             <img src="{% static 'img/sta.jpg' %}" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect>
                         {% endif %}
                         <strong class="me-auto">{{post.user}}</strong>
+                        <form action="{% url 'delete_post' post.pk %}">
+                            <button type="submit" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </form>
                     </div>
                     <div class="card shadow-sm">
                         {% if post.posts_picture %}
@@ -51,22 +70,27 @@
                             <p class="card-text">{{post.content}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <p>{{ post.likes.count }}</p>
                                     {% if user.is_authenticated %}
                                                 <form action="{% url 'posts_like' post.pk %}" method="POST">
                                                     {% csrf_token %}
                                             <input type="hidden" name="post.id" value="{{ obj.id }}">
                                             {% if user in post.likes.all %}
-                                                <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">-------{{ like.value }}</button>
+                                                <button
+                                                        type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">Unlike {{ post.likes.count }}
+                                                </button>
                                             {% else %}
-                                                <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">️️️️️️❤️️️️️️️ {{ like.value }}</button>
+                                                <button
+                                                        type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">️️️️️️❤️️️️️️️ {{ post.likes.count }}
+                                                </button>
                                             {% endif %}
                                         <button type="button" class="btn btn-sm btn-outline-secondary">
                                             <a  href="{% url 'posts_detail' post.pk%}">View</a>
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">
-                                            <a  href="{% url 'add_comments' post.pk %}">Add Comment</a>
-                                        </button>
+
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">
+                                                    <a  href="{% url 'add_comments' post.pk %}">Add Comment: {{ post.comment_count }}</a>
+                                                </button>
+
                                         </form>
                                     {% endif %}
                                 </div>

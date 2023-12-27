@@ -23,24 +23,28 @@
                         <p class="card-text"> {{ post.content }}</p>
                         <!-- Тут можуть бути дії, пов'язані з постом -->
                         <div class="btn-group">
-                            <p>{{ post.likes.count }}</p>
                             {% if user.is_authenticated %}
                                 <form action="{% url 'posts_like' post.pk %}" method="POST">
                                     {% csrf_token %}
                                     <input type="hidden" name="post.id" value="{{ obj.id }}">
-                                    {% if user in post.likes.all %}
+                                    {% if users in post.likes.all %}
                                         <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">{{ post.likes.value }}</button>
                                     {% else %}
-                                        <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">️️️️️️❤️️️️️️️ {{ post.likes.value }}</button>
+                                        <button type="submit" name="blogpost_id" value="{{ object.id }}" class="btn btn-info">️️️️️️❤️️️️️️️ {{ post.likes.count }}</button>
                                     {% endif %}
                                 </form>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    {% if post.user == user %}
+                                    <form action="{% url 'update_post' post.pk %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    </form>
+                                    {% endif %}
                             {% else %}
                             <a class="btn btn-outline-info" href="{% url 'login' %}?next={{request.path}}">Log in to like this article!</a><br>
                             {% endif %}
-                            <button type="button" class="btn btn-sm btn-outline-secondary">
-                                    <a  href="{% url 'add_comments' post.pk %}">Add Comment</a>
-                            </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">
+                                        <a  href="{% url 'add_comments' post.pk %}">Add Comment</a>
+                                </button>
                         </div>
                     </div>
                 </div>
@@ -50,22 +54,29 @@
 </div>
 
 <div class="container">
-    <h1 class="mt-5">Comments</h1>
+    <h1 class="mt-5">Comments: {{ comment.count }}</h1>
+
     <div class="row mt-3">
+
           <div class="col-md-8 mx-auto">
+
                 <ul class="list-group">
                     {% for com in comment %}
+
                         <li class="list-group-item">
                               <div class="d-flex justify-content-between align-items-center">
                                     <div class="user">
                                       <strong>{{ com.user }}</strong>
                                     </div>
                                     <div class="created_at text-muted">
-                                      {{ com.created_at|date:"d.m.Y H:i" }}
+                                        {{ com.create_at|date:"d.m.Y H:i" }}
                                     </div>
+
                               </div>
+
                               <div class="content mt-2">{{ com.content }}</div>
                         </li>
+
                     {% endfor %}
                 </ul>
           </div>

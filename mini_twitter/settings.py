@@ -58,7 +58,7 @@ MIDDLEWARE = [
 INTERNAL_IPS = [
     '127.0.0.1'
 ]
-
+AUTH_USER_MODEL = 'users.User'
 ROOT_URLCONF = 'mini_twitter.urls'
 
 TEMPLATES = [
@@ -86,8 +86,8 @@ WSGI_APPLICATION = 'mini_twitter.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'twitter',
-        'USER': 'twit_admin',
+        'NAME': 'appstwit',
+        'USER': 'stalk',
         'PASSWORD': 'qwerty1234',
         'HOST': 'localhost',
         'PORT': '5432',

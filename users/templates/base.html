@@ -152,15 +152,21 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-8 col-md-7 py-4">
-          <h4>Про нашу бібліотеку</h4>
-          <p class="text-body-secondary">Саме у нас ви можете прочитати усі книжки!</p>
+          <h4></h4>
+          <p class="text-body-secondary">Good Morning, New York City</p>
         </div>
         <div class="col-sm-4 offset-md-1 py-4">
           <h4>Contact</h4>
           <ul class="list-unstyled">
-            <li><a href="#" class="text-white">Follow on Twitter</a></li>
-            <li><a href="#" class="text-white">Like on Facebook</a></li>
-            <li><a href="{% url 'posts' %}" class="text-white">Posts</a></li>
+            <li>
+                <a href="{% url 'user_detail' user.pk %}"  class="text-white">Home page</a>
+            </li>
+            <li>
+                <a href="{% url 'posts_user' 'follow' %}" class="text-white {% if folder == 'all' %} active {% endif %}">Posts</a>
+            </li>
+            <li>
+                <a href="{% url 'posts' %}" class="text-white">All Posts</a>
+            </li>
           </ul>
         </div>
       </div>

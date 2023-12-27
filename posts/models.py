@@ -2,6 +2,8 @@ from django.db import models
 from users.models import User
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.shortcuts import render
+from django.db.models import Sum
 
 
 class Post(models.Model):
@@ -27,6 +29,7 @@ class Comments(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     content = models.TextField()
+    create_at = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
         return reverse('posts_detail', kwargs={'pk': self.post.pk})
@@ -34,7 +37,9 @@ class Comments(models.Model):
     def __str__(self):
         return f"{self.user} {self.post} {self.content}"
 
-    create_at = models.DateTimeField(auto_now_add=True)
+
+
+
 
 
 LIKE_CHOICES = (

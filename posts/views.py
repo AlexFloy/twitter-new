@@ -1,8 +1,12 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from users.models import User
+from django.db.models import Count
 from posts.models import Post, Comments, Like
 from posts.forms import PostForm, CommentForm
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
 from django.shortcuts import get_object_or_404, redirect, reverse
@@ -30,8 +34,17 @@ class PostListView(ListView):
     extra_context = {'title': 'POSTS LIST'}
 
     def get_queryset(self):
-        query = super().get_queryset()
-        return query.select_related('user')
+        if self.kwargs.get('folder'):
+            folder = self.kwargs.get('folder')
+            if folder == 'my':
+                posts = Post.objects.filter(user=self.request.user)
+            elif folder == 'follow':
+                follower_users = self.request.user.following.all()
+                posts = Post.objects.filter(user__in=follower_users)
+        else:
+            posts = Post.objects.all().select_related('user')
+        return posts.annotate(comment_count=Count('comments', distinct=True),
+                              like_count=Count('likes', distinct=True))
 
     def username(self):
         user_name = self.kwargs.get('user_name')
@@ -74,9 +87,15 @@ def comments_menu(request, user_id):
 # # додавання посту"""
 
 
+@method_decorator(login_required, name='dispatch')
 class PostCreateView(CreateView):
     form_class = PostForm
     template_name = 'posts/create_post.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 #  додавання посту
 
 """"# def post_detail(request, post_id):
@@ -98,8 +117,9 @@ class PostDetailView(DetailView):
     template_name = 'posts/post_detail.html'
 
     def get_queryset(self):
-        query = super().get_queryset()
-        return query.select_related('user')
+        posts = Post.objects.all().select_related('user')
+        return posts.annotate(comment_count=Count('comments', distinct=True),
+                              like_count=Count('likes', distinct=True))
 
     # зробив select_related, вирішити з юзер
 
@@ -131,18 +151,15 @@ class CommentCreateView(CreateView):
     template_name = 'posts/add_comment.html'
 
     def form_valid(self, form):
+        form.instance.user = self.request.user
         form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
         return super().form_valid(form)
 # додавання коменту
 
 
 def post_like(request, pk):
-    print(f"User ID: {request.user.pk}")
-    print(f"Post ID: {pk}")
     user = request.user.pk
-    # user = get_user_model().objects.get(pk=request.user.pk)
     post = get_object_or_404(Post, pk=pk)
-
     user_instance = User.objects.get(pk=user)
 
     like, created = Like.objects.get_or_create(user=user_instance, post=post)
@@ -154,19 +171,31 @@ def post_like(request, pk):
     else:
         post.likes.add(user)
         like.value = 'Like'
-    # if created:
-    #     if like.value == "Like":
-    #         like.value = "Unlike"
-    #     else:
-    #         like.value = "Like"
-    # else:
-    #     like.value = "Unlike" if like.value == "Like" else "Like"
     print(f"Before save: {like.value}")  # Додайте цей вивід для відстеження
     like.value = "Unlike" if like.value == "Like" else "Unlike"
     like.save()
     print(f"After save: {like.value}")
-    return redirect(request.META.get('HTTP_REFERER','redirect_if_referer_not_found'),pk=pk)
+    return redirect(request.META.get('HTTP_REFERER','redirect_if_referer_not_found'), pk=pk)
 
 # додоавання лайку  доробити !!!!!!!!!
 # ставить лайк але не міняє кнопку на unlikee
+
+
+class PostUpdateView(UpdateView):
+    model = Post
+    context_object_name = 'update_post'
+    template_name = 'posts/post_update.html'
+
+    form_class = PostForm
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    context_object_name = 'delete_post'
+    template_name = 'posts/delete_post.html'
+
+    def get_success_url(self):
+        user_pk = self.request.user.pk
+
+        return reverse_lazy('user_detail', kwargs={'pk': user_pk})
 

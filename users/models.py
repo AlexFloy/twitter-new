@@ -1,13 +1,17 @@
 from django.db import models
+from django.urls import reverse
+from django.contrib.auth.models import AbstractUser
 
 
-class User(models.Model):
-    user_name = models.CharField(max_length=35)
-    email = models.EmailField(max_length=254, unique=True)
+class User(AbstractUser):
     profile_picture = models.ImageField(upload_to="users/profile_images", null=True, blank=True)
-    data_joined = models.DateField()
+    create_at = models.DateTimeField(auto_now_add=True)
+    subscribe = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='following')
 
     def __str__(self):
-        return f"{self.user_name}"
+        return f"{self.username}"
 
-    create_at = models.DateTimeField(auto_now_add=True)
+    def get_absolute_url(self):
+        return reverse('user_detail', kwargs={'pk': self.pk})
+
+
